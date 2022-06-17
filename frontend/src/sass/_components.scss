@@ -1,0 +1,129 @@
+.sidebar{
+    width:224px;
+    min-height: 100vh;
+    background-color: green;
+    display: flex;
+    flex-direction: column;
+    transition: width .5s ease-in;
+    padding: 0 1rem;
+
+    &.closed{
+        width: 100px;
+        
+
+        & .sidebar-header-heading{
+            flex-grow: 0;
+            width: 0;
+        }
+
+        & .sidebar-header-toggle{
+            margin: auto;
+        }
+
+        & .sidebar-link{
+            padding-left: 1.5rem;
+            
+            
+            &-text{
+                width: 0;
+                margin-left: 0;
+            }
+        }
+        & .sidebar-link-icon{
+            
+            &-expand{
+                margin-left: 0;
+                width: 0;
+                
+    
+            }
+        }
+
+       
+
+
+    }
+
+    &-header{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(0,0,0,.1);
+
+
+
+        
+
+        &-heading{
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+            flex-wrap: nowrap;
+            font-size: larger;
+            font-weight: bold;
+
+            &-text{
+                margin-left: .5rem;
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 0;
+                line-height: 1.2;
+                
+            }
+
+            
+        }
+
+        &-toggle{
+            margin-left: auto;
+            transition: margin .5s ease-in;
+
+            &-icon{
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+    }
+
+    &-link{
+        display: flex;
+        padding: 1rem 0;
+        color: #fff;
+        text-decoration: none;
+        align-items: baseline;
+        
+        transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+        &-text{
+            margin-left: 1rem;
+            overflow: hidden;
+            vertical-align: middle;
+            align-self: center;
+            transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+            padding: 0;
+            text-overflow: ellipsis;
+            line-height: 1;
+            width: 50%;
+        }
+
+        &-icon{
+            width: 16px;
+            height: 1rem;
+            transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+            vertical-align: baseline;
+            & path{
+                stroke: #fff;
+            }
+
+            &-expand{
+                margin-left: auto;
+                transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+            }
+        }
+
+            
+    }
+}
