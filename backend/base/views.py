@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .serializers import TaskSerializer, ListSerializer, UserSerializer, UserSerializerWithToken
 from .models import Task, List
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from django.db import IntegrityError
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 @api_view(['GET'])
@@ -108,3 +109,9 @@ def registerUser(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserById(request, pk):
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)

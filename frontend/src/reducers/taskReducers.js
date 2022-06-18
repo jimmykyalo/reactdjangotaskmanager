@@ -37,7 +37,7 @@ export const taskListReducer = (state = { tasks: []}, action) => {
             
             return {
                 loading: false,
-                taskPosts: action.payload,
+                tasks: action.payload,
             }
 
         case TASK_LIST_FAIL:

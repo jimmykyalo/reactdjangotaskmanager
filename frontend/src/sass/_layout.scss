@@ -1,0 +1,26 @@
+.content{
+    
+    
+
+    .navbar{
+        background-color: var(--color-grey-light-1);
+        padding-left: 1rem;
+        padding-right: 1.5rem;
+        
+        .btn{
+            padding-left: 16px;
+            padding-right: 16px;
+            font-size: 14px;
+            background-color: $color-primary;
+
+        }
+    }
+}
+.home{
+    position: relative;
+    min-height: calc(100vh - 51px);
+    padding: 2rem 4rem;
+    background-color:#B0A2F2;
+    border-top-left-radius: 20px;
+    box-shadow: inset 1px 4px 9px -6px rgba(0,0,0,.1);
+}

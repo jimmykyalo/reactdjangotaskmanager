@@ -1,24 +1,37 @@
 .sidebar{
-    width:224px;
+    position: relative;
+    width:280px;
     min-height: 100vh;
-    background-color: green;
+    background-color: var(--color-grey-light-1);
     display: flex;
     flex-direction: column;
     transition: width .5s ease-in;
-    padding: 0 1rem;
+    padding: 0 1.25rem;
+    color: var(--color-grey-dark-1);
+    z-index: 1;
+    
 
     &.closed{
         width: 100px;
         
 
         & .sidebar-header-heading{
-            flex-grow: 0;
+            
             width: 0;
+            &-text{
+                width: 0;
+                margin-left: 0;
+            }
+
+            &-icon{
+                margin-right: 0;
+                margin-left: .5rem;
+            }
+
+            
         }
 
-        & .sidebar-header-toggle{
-            margin: auto;
-        }
+        
 
         & .sidebar-link{
             padding-left: 1.5rem;
@@ -30,6 +43,7 @@
             }
         }
         & .sidebar-link-icon{
+            margin-left: 0;
             
             &-expand{
                 margin-left: 0;
@@ -39,9 +53,29 @@
             }
         }
 
+        & .sidebar-toggle{
+            right: 4px;
+        }
+
        
 
 
+    }
+
+    &-toggle{
+        
+        position: absolute;
+        transition: margin .5s ease-in;
+        right: 1.25rem;
+        bottom: 4px;
+        text-align: center;
+        transition: right .5s ease-in;
+
+        &-icon{
+            width: 1.5rem;
+            height: 1.5rem;
+            fill: var(--color-grey-dark-4);
+        }
     }
 
     &-header{
@@ -49,7 +83,10 @@
         flex-direction: row;
         width: 100%;
         padding: 1rem 0;
-        border-bottom: 1px solid rgba(0,0,0,.1);
+        
+        padding-top: .8125rem;
+        padding-bottom: .825rem;
+        
 
 
 
@@ -64,37 +101,72 @@
             transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
             flex-wrap: nowrap;
             font-size: larger;
-            font-weight: bold;
+
+            &-icon{
+                
+                transition: margin .5s ease-in;
+                margin-right: .5rem;
+                
+            }
+            
 
             &-text{
-                margin-left: .5rem;
+                
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 0;
-                line-height: 1.2;
                 
+                overflow: hidden;
+                width: 80%;
+                transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+                display: flex;
+                flex-direction: column;
+                font-size: 14px;
+                font-weight: 500;
+
+                &-email{
+                    color: var(--color-grey-dark-4)
+                }
             }
 
             
         }
 
-        &-toggle{
-            margin-left: auto;
-            transition: margin .5s ease-in;
+        
+    }
 
-            &-icon{
-                width: 1.5rem;
-                height: 1.5rem;
-            }
+    &-search{
+        padding: 1.25rem 0;
+
+        &-input{
+            padding-top: .75rem;
+            padding-bottom: .75rem;
         }
     }
 
     &-link{
         display: flex;
-        padding: 1rem 0;
-        color: #fff;
+        padding: .625rem 0;
+        color: var(--color-grey-dark-1);
         text-decoration: none;
-        align-items: baseline;
+        align-items: center;
+        font-size: 14px;
+        line-height: 24px;
+        font-weight: 500;
+        padding-right: .25rem;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        &:hover, &.selected{
+            background-color: rgba($color-primary, .08);
+            color: var(--color-grey-dark-1);
+
+            & .sidebar-link-icon{
+                fill: #F85977;
+            }
+        }
+        &.selected{
+            background-color: rgba($color-primary, .3); 
+        }
         
         transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
         &-text{
@@ -105,7 +177,7 @@
             transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
             padding: 0;
             text-overflow: ellipsis;
-            line-height: 1;
+            
             width: 50%;
         }
 
@@ -114,16 +186,109 @@
             height: 1rem;
             transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
             vertical-align: baseline;
+            fill: $color-primary;
             & path{
                 stroke: #fff;
             }
+            margin-left: .5rem;
 
             &-expand{
                 margin-left: auto;
                 transition: margin .5s ease-in,width .5s ease-in, padding .5s ease-in;
+                fill: var(--color-grey-dark-2);
+                
             }
         }
 
             
+    }
+}
+
+.loader {
+    width: max-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+
+    & .spinner-border{
+        width: 5rem;
+        height: 5rem;
+    }
+}
+.btn.btn-primary{
+    background-color: $color-primary;
+    border-color: $color-primary;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 14px;
+    background-color: $color-primary;
+
+
+    &:focus{
+        box-shadow: 0 0 0 .25rem rgba($color-primary, .5);
+    }
+
+    &.add-button{
+        align-self: flex-start;
+        margin-bottom: .5rem;
+    }
+}
+.task{
+    border-radius: 1rem !important;
+    align-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    &:not(:first-child){
+        margin-top: .5rem;
+    }
+    &>*:not(:last-child){
+        margin-right: 4rem;
+    }
+    
+    &-check{
+        align-self: center;
+    }
+
+    &-details{
+        width: max-content;
+        display: flex;
+        flex-direction: column;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--color-grey-dark-1);
+        justify-content: space-between;
+        line-height: 1.5;
+        align-self: stretch;
+        &-date{
+            color: var(--color-grey-dark-4);
+        }
+    }
+
+    &-description{
+        font-weight: 400;
+        flex-grow: 1;
+        color: var(--color-grey-dark-1);
+    }
+
+    &-importance{
+        align-self: center;
+        text-align: right;
+        &-icon{
+            fill: #F85977;
+        }
+    }
+}
+.menu-bar{
+    color: #fff;
+    padding-bottom: 2rem;
+    &-heading{
+        margin-bottom: 0;
+        line-height: 24px;
+        color: var(--color-grey-light-1);
+        font-weight: 400;
+        font-size: 1.5rem;
     }
 }
