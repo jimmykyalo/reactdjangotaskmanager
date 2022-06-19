@@ -1,11 +1,32 @@
 .content{
-    
-    
-
     .navbar{
         background-color: var(--color-grey-light-1);
         padding-left: 1rem;
         padding-right: 1.5rem;
+        
+        &::before {
+            content: "";
+            position: absolute;
+            
+            background-color: transparent;
+            left: 0;
+            bottom: -30px;
+            height: 30px;
+            width: 15px;
+            border-top-left-radius: 15px;
+            box-shadow: 0 -15px 0 0 var(--color-grey-light-1); /* This is where the magic happens! */
+          }
+
+        
+
+        &.fixed-top{
+            left: 280px;
+            transition: left .3s ease;
+            &.closed{
+                left:100px;
+            }
+
+        }
         
         .btn{
             padding-left: 16px;
@@ -18,9 +39,13 @@
 }
 .home{
     position: relative;
-    min-height: calc(100vh - 51px);
-    padding: 2rem 4rem;
-    background-color:#B0A2F2;
-    border-top-left-radius: 20px;
-    box-shadow: inset 1px 4px 9px -6px rgba(0,0,0,.1);
+    min-height: calc(100vh - 4.2125rem);
+    padding: 4rem;
+    background-color:#5187ed;
+    box-shadow: inset 2px 2px 9px -6px rgba(0,0,0,.3);
+    margin-top: 4.2125rem;
+}
+.form-label{
+    margin-bottom: 0;
+    margin-top: 1rem;
 }

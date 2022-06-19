@@ -132,7 +132,7 @@ export const createTask = (task) => async (dispatch, getState) => {
     }
 }
 
-export const updateTask = (task) => async (dispatch, getState) => {
+export const updateTasks = (tasks) => async (dispatch, getState) => {
     try {
         dispatch({
             type: TASK_UPDATE_REQUEST
@@ -150,8 +150,8 @@ export const updateTask = (task) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/tasks/update/${task._id}/`,
-            task,
+            `/api/tasks/update/`,
+            tasks,
             config
         )
 

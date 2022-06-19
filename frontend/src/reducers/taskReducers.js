@@ -75,7 +75,7 @@ export const taskCreateReducer = (state = {}, action) => {
             return { loading: true }
 
         case TASK_CREATE_SUCCESS:
-            return { loading: false, taskMessage: action.payload }
+            return { loading: false, task: action.payload, success:true }
 
         case TASK_CREATE_FAIL:
             return { loading: false, error: action.payload }

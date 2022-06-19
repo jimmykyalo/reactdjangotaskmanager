@@ -10,8 +10,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import Loader from './Loader';
 import Message from './Message';
+import { GiHamburgerMenu } from 'react-icons/gi'
 
-function Header() {
+function Header({setIsOpen, isOpen, fixed}) {
   const [showModal, setShowModal] = useState(false);
 
   const handleCloseModal = () => setShowModal(false);
@@ -64,9 +65,13 @@ function Header() {
   };
   
   return (
-    <Navbar className='py-3' >
-        <Container>
-            <Navbar.Brand className='text-dark'></Navbar.Brand>
+    <Navbar fixed='top' className={`py-3 ${!isOpen && 'closed'}`}>
+        <Container fluid>
+            <Navbar.Brand className='text-dark'>
+            <div className="sidebar-toggle">
+              <GiHamburgerMenu onClick={()=>setIsOpen(!isOpen)} className='sidebar-toggle-icon'/>
+            </div>
+            </Navbar.Brand>
             {userInfo?<Button variant="primary" onClick={()=>dispatch(logout())}>
               Logout
             </Button>:<Button variant="primary" onClick={handleShowModal}>
@@ -138,10 +143,10 @@ function Header() {
 
 
 
-                {loading?<Loader /> :
+                {loading && <Loader />}
                 <button color="success" type='submit' className='w-100 mb-2  btn btn-primary' >
                     Sign In <LoginRoundedIcon />
-                </button>}
+                </button>
                 {error && <Message severity={'error'}>{error}</Message>}
 
                 </Form>

@@ -12,10 +12,13 @@ class List(models.Model):
 
 class Task(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
-    name = models.CharField(max_length=1000)
     createdAt = models.DateTimeField(auto_now_add=True)
-    completed = models.BooleanField(default=False)
-    deadline = models.DateTimeField(blank=True, null=True)
-    list = models.ForeignKey(List, on_delete=models.PROTECT, blank=True, null=True)
+    name = models.CharField(max_length=1000)
     description = models.TextField(blank=True, null=True)
+    startTime = models.DateTimeField(blank=True, null=True)
+    endTime = models.DateTimeField(blank=True, null=True)
     important = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
+    completedTime = models.DateTimeField(blank=True, null=True)
+    list = models.ForeignKey(List, on_delete=models.PROTECT, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)

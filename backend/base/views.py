@@ -10,6 +10,8 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from dateutil.parser import parse
 # Create your views here.
 
 @api_view(['GET'])
@@ -65,12 +67,35 @@ def createTask(request):
         list = List.objects.get(_id=data['listId'])
     except:
         list=None
+    
     task = Task.objects.create(
         name=data['name'],
-        user=user,
-        list=list
+        description=data['description'],
+        startTime=timezone.make_aware(parse(data['startTime']), timezone.get_current_timezone()),
+        endTime=timezone.make_aware(parse(data['endTime']), timezone.get_current_timezone()),
+        completedTime=timezone.make_aware(parse(data['completedTime']), timezone.get_current_timezone()),
+        important=data['important'],
+        completed=data['completed'],
+        user=user
     )
     serializer = TaskSerializer(task, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateTasks(request):
+    data = request.data
+    taskList = list()
+    print(data)
+    for i in data:
+        task = Task.objects.get(_id=i['_id'])
+        setattr(task, i['attribute'], i['value'])
+        task.save()
+        taskList.append(task)
+    
+    serializer=TaskSerializer(taskList, many=True)
+    
+    
     return Response(serializer.data)
 
 
