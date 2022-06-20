@@ -44,6 +44,10 @@
     background-color:#5187ed;
     box-shadow: inset 2px 2px 9px -6px rgba(0,0,0,.3);
     margin-top: 4.2125rem;
+
+    @media only screen and (max-width:900px) {
+        padding: 2rem 1rem;
+    }
 }
 .form-label{
     margin-bottom: 0;

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {  ListGroup, Offcanvas, FormCheck, Container } from 'react-bootstrap';
+import {  ListGroup, Spinner, FormCheck, Container } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -15,11 +15,15 @@ import AddTaskForm from '../components/AddTaskForm';
 import { TASK_CREATE_RESET, TASK_UPDATE_RESET } from '../constants/taskConstants'
 import { Button, Tooltip } from '@mui/material';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import axios from 'axios';
 
 function HomeScreen() {
   const [selectAll, setSelectAll] = useState(false)
   const [taskModal, setTaskModal] = useState(false)
   const [editMode, setEditMode] = useState(false)
+  const [updatingImportance, setUpdatingImportance] = useState(false)
+  const [markingId, setMarkingId] = useState(0)
+  const [changesArray, setChangesArray] = useState([])
 
   const dispatch = useDispatch()
 
@@ -45,9 +49,7 @@ function HomeScreen() {
       dispatch({type:TASK_CREATE_RESET})
     }
 
-    if (successUpdate){
-      dispatch({type:TASK_UPDATE_RESET})
-    }
+    
     
   }, [dispatch, userInfo, successCreate, successUpdate])
 
@@ -57,7 +59,7 @@ function HomeScreen() {
     setValue(newValue);
   };
 
-  const handleUpdateStatus = (attribute, status)=>{
+  const handleUpdateStatus = (attribute, status, single)=>{
     
     var elementsArray = ([...document.getElementsByClassName("form-check-input")]).filter(item=>item.checked && item.dataset.id)
     if(elementsArray.length===0){
@@ -83,13 +85,39 @@ function HomeScreen() {
     
   }
 
+  const markImportanceHandler = async(taskId) =>{
+    setMarkingId(taskId)
+    setUpdatingImportance(true)
+    const attribute = 'important'
+    try {
+      const config = {
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`
+        }
+      }
+
+      const { data } = await axios.post(
+          `/api/tasks/mark/`,
+          {taskId, attribute},
+          config
+      )
+      setChangesArray([...changesArray, data._id])
+      setUpdatingImportance(false)
+      setMarkingId(0)
+    } catch (error) {
+      setUpdatingImportance(false)
+      setMarkingId(0)
+    }
+  }
+
   
 
   
   return (
     <Container fluid className='home d-flex flex-column'>
       <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
-      {loading || loadingUpdate ?<Loader /> : error || errorUpdate ? <Message severity={'error'}>{error || errorUpdate}</Message>:
+      {loading || loadingUpdate ?<Loader /> : error || errorUpdate ? <Message severity={'error'}>{error || errorUpdate}</Message>:''}
       <>
         <div className='menu-bar d-flex flex-row'>
           <h2 className="menu-bar-heading">
@@ -144,7 +172,7 @@ function HomeScreen() {
               </div>
               <ListGroup className='task-list'>
                 {tasks.filter(item=>!item.completed).map(task=>(
-                    <Task editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                    <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
@@ -159,14 +187,14 @@ function HomeScreen() {
               </div>
               <ListGroup className='task-list'>
                 {tasks.filter(item=>item.completed).map(task=>(
-                    <Task completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                    <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
             
           </TabContext>
         </>      
-      }
+      
       
 
 

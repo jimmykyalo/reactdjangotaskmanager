@@ -98,6 +98,22 @@ def updateTasks(request):
     
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def markTask(request):
+    data = request.data
+    
+    task = Task.objects.get(_id=data['taskId'])
+    taskValue = getattr(task, data['attribute'])
+    setattr(task, data['attribute'], not taskValue)
+    task.save()
+    
+    
+    serializer=TaskSerializer(task, many=False)
+    
+    
+    return Response(serializer.data)
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):

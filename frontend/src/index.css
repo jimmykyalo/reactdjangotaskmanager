@@ -66,6 +66,9 @@ body {
   background-color: #5187ed;
   box-shadow: inset 2px 2px 9px -6px rgba(0, 0, 0, 0.3);
   margin-top: 4.2125rem; }
+  @media only screen and (max-width: 900px) {
+    .home {
+      padding: 2rem 1rem; } }
 
 .form-label {
   margin-bottom: 0;
@@ -245,17 +248,17 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.18); }
   .task:not(:first-child) {
     margin-top: .5rem; }
-  .task > *:not(:last-child) {
-    margin-right: 4rem; }
+  .task:hover .task-actions-icon {
+    opacity: 1; }
   .task-check {
-    align-self: center; }
+    align-self: center;
+    width: 5%; }
   .task-details {
-    width: 12rem;
-    max-width: 12rem;
+    width: 25%;
+    max-width: 25%;
     display: flex;
     flex-direction: column;
     font-weight: 500;
-    white-space: nowrap;
     color: var(--color-grey-dark-1);
     justify-content: space-between;
     line-height: 1;
@@ -269,18 +272,43 @@ body {
       .task-details-date[contenteditable="true"] {
         border: 1px dashed #5946D2; }
   .task-description {
+    width: 35%;
     font-weight: 400;
     flex-grow: 1;
     color: var(--color-grey-dark-1);
-    max-width: 25rem; }
+    max-width: 35%; }
     .task-description[contenteditable="true"] {
       border: 1px dashed #5946D2; }
-  .task-importance {
+  .task-actions {
     margin-left: auto;
     align-self: center;
-    text-align: right; }
-    .task-importance-icon {
-      fill: #F85977; }
+    display: flex;
+    width: 10%;
+    justify-content: flex-end; }
+    .task-actions-icon {
+      opacity: 0;
+      padding: 0 !important;
+      text-align: center;
+      transition: opacity .3s ease; }
+      .task-actions-icon:not(:last-child) {
+        margin-right: .5rem; }
+      .task-actions-icon.true {
+        opacity: 1; }
+      .task-actions-icon svg {
+        cursor: pointer; }
+      .task-actions-icon-delete {
+        fill: #ffc107; }
+      .task-actions-icon-complete {
+        fill: #5946D2; }
+      .task-actions-icon-loading {
+        width: 1rem;
+        height: 1rem;
+        vertical-align: middle; }
+      .task-actions-icon-importance {
+        fill: #F85977;
+        transition: all .3s ease; }
+        .task-actions-icon-importance:hover {
+          fill: #e10a32; }
 
 .menu-bar {
   color: #fff; }
