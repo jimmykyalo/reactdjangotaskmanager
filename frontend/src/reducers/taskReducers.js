@@ -21,6 +21,7 @@ import {
     TASK_UPDATE_SUCCESS,
     TASK_UPDATE_FAIL,
     TASK_UPDATE_RESET,
+    TASK_DELETE_RESET,
     
 
 } from '../constants/taskConstants'
@@ -98,6 +99,9 @@ export const taskDeleteReducer = (state = {}, action) => {
 
         case TASK_DELETE_FAIL:
             return { loading: false, error: action.payload }
+        
+        case TASK_DELETE_RESET:
+            return {}
 
         default:
             return state

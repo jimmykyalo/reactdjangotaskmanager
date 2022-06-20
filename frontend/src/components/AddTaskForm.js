@@ -44,7 +44,7 @@ function AddTaskForm({taskShow, setTaskShow}) {
         </Modal.Header>
         <Modal.Body className='pt-0'>
             {loading && <Loader /> }
-            {error && <Message severity={error}>{error}</Message> }
+            {error && <Message severity={'error'}>{error}</Message> }
             <Form onSubmit={onSubmitHandler}>
                 <Form.Group controlId='name'>
                     <Form.Label>Name</Form.Label>

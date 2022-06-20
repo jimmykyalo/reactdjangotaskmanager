@@ -7,6 +7,9 @@
         &::before {
             content: "";
             position: absolute;
+            @media only screen and (max-width:900px){
+                display: none;
+            }
             
             background-color: transparent;
             left: 0;
@@ -22,6 +25,14 @@
         &.fixed-top{
             left: 280px;
             transition: left .3s ease;
+
+            @media only screen and (max-width:1200px){
+                left: 100px;
+            }
+
+            @media only screen and (max-width:900px){
+                left: 0;
+            }
             &.closed{
                 left:100px;
             }

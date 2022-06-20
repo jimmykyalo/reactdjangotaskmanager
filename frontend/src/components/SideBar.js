@@ -45,7 +45,7 @@ function SideBar({isOpen, fixed}) {
           <HiChevronRight className='sidebar-link-icon-expand' />
        </NavLink>
 
-       <NavLink activeClassName='selected' className='sidebar-link' to='/lists'>
+       <NavLink activeClassName='selected' className='sidebar-link' to='/important'>
           <FaStar style={{fill:'#F85977'}} className='sidebar-link-icon' />
           <span className='sidebar-link-text'>Important</span>
           <HiChevronRight className='sidebar-link-icon-expand' />

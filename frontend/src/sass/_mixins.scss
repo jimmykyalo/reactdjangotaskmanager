@@ -1,0 +1,33 @@
+@mixin collapsedSidebar {
+    width: 100px;
+    min-width: 100px;
+    & .sidebar-header-heading{
+        width: 0;
+        &-text{
+            width: 0;
+            margin-left: 0;
+        }
+
+        &-icon{
+            margin-right: 0;
+            margin-left: .5rem;
+        }
+    }
+
+    & .sidebar-link{
+        padding-left: 1.25rem;
+
+        &-text{
+            width: 0;
+            margin-left: 0;
+        }
+    }
+    & .sidebar-link-icon{
+        margin-left: 0;
+
+        &-expand{
+            margin-left: 0;
+            width: 0;
+        }
+    }
+  }

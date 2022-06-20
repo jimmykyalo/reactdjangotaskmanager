@@ -17,6 +17,9 @@ function App() {
           <Header isOpen={isOpen} setIsOpen={setIsOpen} />
           
           <Route path={'/'} exact component={HomeScreen} />
+          <Route path={'/important'} >
+            <HomeScreen important />
+          </Route>
         </Container>
       </Container>
     </Router>

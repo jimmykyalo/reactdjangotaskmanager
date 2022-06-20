@@ -67,13 +67,27 @@ def createTask(request):
         list = List.objects.get(_id=data['listId'])
     except:
         list=None
+    try:
+        completionTime=timezone.make_aware(parse(data['completedTime']), timezone.get_current_timezone())
+    except:
+        completionTime=None
+    
+    try:
+        endTime=timezone.make_aware(parse(data['endTime']), timezone.get_current_timezone())
+    except:
+        endTime=None
+    
+    try:
+        startTime=timezone.make_aware(parse(data['startTime']), timezone.get_current_timezone())
+    except:
+        startTime=None
     
     task = Task.objects.create(
         name=data['name'],
         description=data['description'],
-        startTime=timezone.make_aware(parse(data['startTime']), timezone.get_current_timezone()),
-        endTime=timezone.make_aware(parse(data['endTime']), timezone.get_current_timezone()),
-        completedTime=timezone.make_aware(parse(data['completedTime']), timezone.get_current_timezone()),
+        startTime=startTime,
+        endTime=endTime,
+        completedTime=completionTime,
         important=data['important'],
         completed=data['completed'],
         user=user
@@ -89,7 +103,10 @@ def updateTasks(request):
     print(data)
     for i in data:
         task = Task.objects.get(_id=i['_id'])
-        setattr(task, i['attribute'], i['value'])
+        if i['attribute'] =='startTime' or i['attribute'] =='endTime':
+            setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
+        else:
+            setattr(task, i['attribute'], i['value'])
         task.save()
         taskList.append(task)
     
@@ -97,6 +114,15 @@ def updateTasks(request):
     
     
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def deleteTasks(request):
+    data = request.data
+    for i in data:
+        task = Task.objects.get(_id=i['_id'])
+        task.delete()
+    return Response('Tasks Deleted')
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -113,6 +139,7 @@ def markTask(request):
     
     
     return Response(serializer.data)
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -156,3 +183,29 @@ def getUserById(request, pk):
     user = User.objects.get(id=pk)
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateLists(request):
+    data = request.data
+    listList = list()
+    print(data)
+    for i in data:
+        list = List.objects.get(_id=i['_id'])
+        setattr(list, i['attribute'], i['value'])
+        list.save()
+        listList.append(list)
+    
+    serializer=ListSerializer(listList, many=True)
+    
+    
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def deleteLists(request):
+    data = request.data
+    for i in data:
+        list = List.objects.get(_id=i['_id'])
+        list.delete()
+    return Response('Lists Deleted')

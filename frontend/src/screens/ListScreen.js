@@ -17,7 +17,7 @@ import { Button, Tooltip } from '@mui/material';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import axios from 'axios';
 
-function HomeScreen({important}) {
+function ListScreen({match}) {
   const [selectAll, setSelectAll] = useState(false)
   const [taskModal, setTaskModal] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -52,8 +52,8 @@ function HomeScreen({important}) {
       dispatch({type:TASK_CREATE_RESET})
     }
     if (successUpdate){
-      setEditMode(false)
-      dispatch({type:TASK_UPDATE_RESET})
+        setEditMode(false)
+        dispatch({type:TASK_UPDATE_RESET})
     }
 
     if (successDelete){
@@ -131,7 +131,6 @@ function HomeScreen({important}) {
       setChangesArray([...changesArray, data._id])
       setUpdatingImportance(false)
       setMarkingId(0)
-      important && dispatch({type:TASK_UPDATE_SUCCESS})
     } catch (error) {
       setUpdatingImportance(false)
       setMarkingId(0)
@@ -144,7 +143,7 @@ function HomeScreen({important}) {
   return (
     <Container fluid className='home d-flex flex-column'>
       <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
-      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete ? <Message severity='error'>{error || errorUpdate || errorDelete}</Message>:''}
+      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete ? <Message severity={'error'}>{error || errorUpdate || errorDelete}</Message>:''}
       <>
         <div className='menu-bar d-flex flex-row'>
           <h2 className="menu-bar-heading">
@@ -182,14 +181,19 @@ function HomeScreen({important}) {
         </div>
         
           <TabContext value={value}>
+          
        
-              <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <TabList onChange={handleChange} aria-label="List Tabs">
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-      width: 'auto'
-    }}} label="To do" value="1" />
+                        width: 'auto'
+                    }}} label="Important" value="1" />
+
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-      width: 'auto'
-    }}} label="Completed" value="2" />
+                        width: 'auto'
+                    }}} label="To do" value="2" />
+                <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
+                        width: 'auto'
+                    }}} label="Completed" value="3" />
                 
               </TabList>
             
@@ -202,12 +206,28 @@ function HomeScreen({important}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {tasks.filter(item=>important?!item.completed && item.important:!item.completed).map(task=>(
+                {tasks.filter(item=>item.important).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
-            <TabPanel  sx={{padding:'1rem 0'}} value="2">
+
+            <TabPanel sx={{padding:'1rem 0'}} value="2">
+              <div className="controls">
+                <FormCheck className='select-all' checked={selectAll} onChange={(e)=>handleSelectAll(e.target.checked)} label='Select All' />
+                <div className="controls-edit-buttons">
+                  <Button onClick={()=>setEditMode(!editMode)} size='small' color='inherit' variant="outlined" startIcon={<FaRegEdit />}>{editMode?'Disable':'Edit'}</Button>
+                  
+                </div>
+              </div>
+              <ListGroup className='task-list'>
+                {tasks.filter(item=>!item.completed).map(task=>(
+                    <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                ))}
+              </ListGroup>
+            </TabPanel>
+
+            <TabPanel  sx={{padding:'1rem 0'}} value="3">
               <div className="controls">
                 <FormCheck className='select-all' checked={selectAll} onChange={(e)=>handleSelectAll(e.target.checked)} label='Select All' />
                 <div className="controls-edit-buttons">
@@ -217,11 +237,15 @@ function HomeScreen({important}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {tasks.filter(item=>important?item.completed && item.important:item.completed).map(task=>(
+                {tasks.filter(item=>item.completed).map(task=>(
                     <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
+
+            
+
+            
             
           </TabContext>
         </>      
@@ -233,4 +257,4 @@ function HomeScreen({important}) {
   )
 }
 
-export default HomeScreen
+export default ListScreen

@@ -1,31 +1,31 @@
 import axios from 'axios'
 import {
-    TASK_LIST_REQUEST,
-    TASK_LIST_SUCCESS,
-    TASK_LIST_FAIL,
+    LIST_LIST_REQUEST,
+    LIST_LIST_SUCCESS,
+    LIST_LIST_FAIL,
 
-    TASK_DETAILS_REQUEST,
-    TASK_DETAILS_SUCCESS,
-    TASK_DETAILS_FAIL,
+    LIST_DETAILS_REQUEST,
+    LIST_DETAILS_SUCCESS,
+    LIST_DETAILS_FAIL,
 
-    TASK_CREATE_REQUEST,
-    TASK_CREATE_SUCCESS,
-    TASK_CREATE_FAIL,
+    LIST_CREATE_REQUEST,
+    LIST_CREATE_SUCCESS,
+    LIST_CREATE_FAIL,
     
 
-    TASK_DELETE_REQUEST,
-    TASK_DELETE_SUCCESS,
-    TASK_DELETE_FAIL,
+    LIST_DELETE_REQUEST,
+    LIST_DELETE_SUCCESS,
+    LIST_DELETE_FAIL,
 
-    TASK_UPDATE_REQUEST,
-    TASK_UPDATE_SUCCESS,
-    TASK_UPDATE_FAIL,
+    LIST_UPDATE_REQUEST,
+    LIST_UPDATE_SUCCESS,
+    LIST_UPDATE_FAIL,
 
-} from '../constants/taskConstants'
+} from '../constants/listConstants'
 
-export const listTasks = (keyword='') => async (dispatch, getState) => {
+export const listLists = (keyword='') => async (dispatch, getState) => {
     try {
-        dispatch({ type: TASK_LIST_REQUEST })
+        dispatch({ type: LIST_LIST_REQUEST })
 
         const {
             userLogin: { userInfo },
@@ -38,11 +38,11 @@ export const listTasks = (keyword='') => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/tasks${keyword}`, config)
+        const { data } = await axios.get(`/api/lists${keyword}`, config)
         
 
         dispatch({
-            type: TASK_LIST_SUCCESS,
+            type: LIST_LIST_SUCCESS,
             payload: data,
             
 
@@ -50,7 +50,7 @@ export const listTasks = (keyword='') => async (dispatch, getState) => {
 
     } catch (error) {
         dispatch({
-            type: TASK_LIST_FAIL,
+            type: LIST_LIST_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -58,9 +58,9 @@ export const listTasks = (keyword='') => async (dispatch, getState) => {
     }
 }
 
-export const listTaskDetails = (id) => async (dispatch,getState) => {
+export const listListDetails = (id) => async (dispatch,getState) => {
     try {
-        dispatch({ type: TASK_DETAILS_REQUEST })
+        dispatch({ type: LIST_DETAILS_REQUEST })
 
         
 
@@ -75,16 +75,16 @@ export const listTaskDetails = (id) => async (dispatch,getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/tasks/${id}`, config)
+        const { data } = await axios.get(`/api/lists/${id}`, config)
 
         dispatch({
-            type: TASK_DETAILS_SUCCESS,
+            type: LIST_DETAILS_SUCCESS,
             payload: data
         })
 
     } catch (error) {
         dispatch({
-            type: TASK_DETAILS_FAIL,
+            type: LIST_DETAILS_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -92,10 +92,10 @@ export const listTaskDetails = (id) => async (dispatch,getState) => {
     }
 }
 
-export const createTask = (task) => async (dispatch, getState) => {
+export const createList = (list) => async (dispatch, getState) => {
     try {
         dispatch({
-            type: TASK_CREATE_REQUEST
+            type: LIST_CREATE_REQUEST
         })
 
         const {
@@ -110,13 +110,13 @@ export const createTask = (task) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.post(
-            '/api/tasks/create/',
-            task,
+            '/api/lists/create/',
+            list,
             config
         )
 
         dispatch({
-            type: TASK_CREATE_SUCCESS,
+            type: LIST_CREATE_SUCCESS,
             payload: data
         })
 
@@ -124,7 +124,7 @@ export const createTask = (task) => async (dispatch, getState) => {
 
     } catch (error) {
         dispatch({
-            type: TASK_CREATE_FAIL,
+            type: LIST_CREATE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -132,10 +132,10 @@ export const createTask = (task) => async (dispatch, getState) => {
     }
 }
 
-export const updateTasks = (tasks) => async (dispatch, getState) => {
+export const updateLists = (lists) => async (dispatch, getState) => {
     try {
         dispatch({
-            type: TASK_UPDATE_REQUEST
+            type: LIST_UPDATE_REQUEST
         })
 
         const {
@@ -150,24 +150,24 @@ export const updateTasks = (tasks) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/tasks/update/`,
-            tasks,
+            `/api/lists/update/`,
+            lists,
             config
         )
 
         dispatch({
-            type: TASK_UPDATE_SUCCESS,
+            type: LIST_UPDATE_SUCCESS,
         })
 
         dispatch({
-            type: TASK_DETAILS_SUCCESS,
+            type: LIST_DETAILS_SUCCESS,
             payload: data
         })
 
 
     } catch (error) {
         dispatch({
-            type: TASK_UPDATE_FAIL,
+            type: LIST_UPDATE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -175,11 +175,11 @@ export const updateTasks = (tasks) => async (dispatch, getState) => {
     }
 }
 
-export const deleteTasks = (tasks) => async (dispatch, getState) => {
+export const deleteLists = (lists) => async (dispatch, getState) => {
     
     try {
         dispatch({
-            type: TASK_DELETE_REQUEST
+            type: LIST_DELETE_REQUEST
         })
 
         const {
@@ -194,20 +194,20 @@ export const deleteTasks = (tasks) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/tasks/delete/`,
-            tasks,
+            `/api/lists/delete/`,
+            lists,
             config
         )
 
         dispatch({
-            type: TASK_DELETE_SUCCESS,
+            type: LIST_DELETE_SUCCESS,
             payload: data
         })
 
 
     } catch (error) {
         dispatch({
-            type: TASK_DELETE_FAIL,
+            type: LIST_DELETE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

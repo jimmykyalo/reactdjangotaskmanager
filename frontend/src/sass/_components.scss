@@ -16,58 +16,18 @@
 
         
     }
+
+    @media only screen and (max-width:1200px){
+        @include collapsedSidebar;
+    }
+
+    @media only screen and (max-width:900px){
+        display: none;
+    }
     
 
     &.closed{
-        width: 100px;
-        min-width: 100px;
-        
-
-        & .sidebar-header-heading{
-            
-            width: 0;
-            &-text{
-                width: 0;
-                margin-left: 0;
-            }
-
-            &-icon{
-                margin-right: 0;
-                margin-left: .5rem;
-            }
-
-            
-        }
-
-        
-
-        & .sidebar-link{
-            padding-left: 1.25rem;
-
-            
-            
-            
-            &-text{
-                width: 0;
-                margin-left: 0;
-            }
-        }
-        & .sidebar-link-icon{
-            margin-left: 0;
-            
-            &-expand{
-                margin-left: 0;
-                width: 0;
-                
-    
-            }
-        }
-
-        
-
-       
-
-
+        @include collapsedSidebar;
     }
 
     &-toggle{
@@ -78,6 +38,9 @@
         text-align: center;
         transition: right .3s ease;
         margin-left: -4rem;
+        @media only screen and (max-width:1200px){
+            display: none;
+        }
 
         &-icon{
             width: 1.5rem;
@@ -331,13 +294,33 @@
         display: flex;
         width: 10%;
         justify-content: flex-end;
+        @media only screen and (max-width:900px){
+            flex-direction: column;
+            justify-content: space-between;
+        }
         &-icon{
             opacity: 0;
             padding: 0 !important;
             text-align: center;
             transition: opacity .3s ease;
+            @media only screen and (max-width:900px){
+                opacity: 1;
+            }
             &:not(:last-child){
                 margin-right: .5rem;
+
+                @media only screen and (max-width:900px){
+                    margin-right: 0;
+                }
+            
+            }
+
+            &:not(:first-child){
+                
+
+                @media only screen and (max-width:900px){
+                    margin-top: .25rem;
+                }
             
             }
 
@@ -347,15 +330,40 @@
 
             & svg{
                 cursor: pointer;
+                @media only screen and (max-width:900px){
+                    width: 1.125rem;
+                    height: 1.125rem;
+                    &:not(:first-child){
+                        margin-top: .75rem;
+                    }
+                }
                 
             }
 
             &-delete{
                 fill: #ffc107;
+                transition: all .3s ease;
+                &:hover{
+                    fill: darken(#ffc107, 20%);
+                }
+
+                &:active{
+                    fill: #ffc107;
+                    transform: scale(0.95) translateY(2px);  
+                }
             }
 
             &-complete{
                 fill: $color-primary;
+                transition: all .3s ease;
+                &:hover{
+                    fill: darken($color-primary, 20%);  
+                }
+
+                &:active{
+                    fill: $color-primary;
+                    transform: scale(0.95) translateY(2px); 
+                }
             }
 
             &-loading{
@@ -370,9 +378,15 @@
                 
 
                 &:hover{
-                    fill: darken(#F85977, 20%);
-                    
+                    fill: darken(#F85977, 20%); 
                 }
+
+                &:active{
+                    fill: #F85977;
+                    transform: scale(0.95) translateY(2px); 
+                }
+
+
             }
         }
 
@@ -393,8 +407,11 @@
 
     &-buttons{
         margin-left: auto;
+        
         & span{
             margin-right: 1.5rem;
+            
+
         }
         
         &-icon{
@@ -480,4 +497,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     right: 0;
     top: 0;
     width: auto;
+}
+.MuiButtonBase-root.MuiTab-root  {
+    @media only screen and (max-width:900px){
+        min-width: 10rem;
+    }
 }
