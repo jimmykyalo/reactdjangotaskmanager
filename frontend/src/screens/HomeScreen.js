@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom'
+import { makeStyles } from '@mui/styles';
 
 function HomeScreen({important}) {
   const history = useHistory()
@@ -49,6 +50,27 @@ function HomeScreen({important}) {
   const taskDelete = useSelector(state=>state.taskDelete)
   const {success:successDelete, loading:loadingDelete, error: errorDelete} = taskDelete
 
+  const useStyles = makeStyles({
+    select: {
+        '&:before': {
+            borderColor: 'white',
+        },
+        '&:after': {
+            borderColor: 'white',
+        },
+        '&:not(.Mui-disabled):hover::before': {
+            borderColor: 'white',
+        },
+    },
+    icon: {
+        fill: 'white',
+    },
+    root: {
+        color: 'white',
+    },
+})
+
+const classes = useStyles()
   
 
   useEffect(() => {
@@ -195,13 +217,20 @@ function HomeScreen({important}) {
             <Tooltip arrow title="Add To List">
               <span>
               <Select
+                className={classes.select}
+                inputProps={{
+                    classes: {
+                        icon: classes.icon,
+                        root: classes.root,
+                    },
+                }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={selectedList}
                 label="List"
                 onChange={handleListChange}
                 size='small'
-                color='primary'
+                variant='standard'
                 sx={{color:'#fff', outlineColor:'#fff'}}
               >
                 <MenuItem disabled value={0}>List</MenuItem>

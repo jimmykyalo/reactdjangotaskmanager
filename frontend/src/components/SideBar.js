@@ -108,8 +108,8 @@ function SideBar({isOpen, fixed}) {
        <AddListForm listShow={listModal} setListShow={setListModal} />
        {loading || loadingDelete || loadingUpdate ? <Loader />:error || errorDelete || errorUpdate? <Message severity='error'>{error || errorDelete || errorUpdate}</Message>:
             lists.map(list=>(
-              <NavLink key={list._id} activeClassName='selected' className='sidebar-link' to={`list/${list._id}/`}>
-                <BsCardChecklist style={{fill:'#F85977'}} className='sidebar-link-icon' />
+              <NavLink key={list._id} activeClassName='selected' className='sidebar-link' to={`/list/${list._id}/`}>
+                <BsCardChecklist style={{fill:'#5946D2'}} className='sidebar-link-icon' />
                 <span className='sidebar-link-text'>{list.name}</span>
                 <HiChevronRight className='sidebar-link-icon-expand' />
               </NavLink>
