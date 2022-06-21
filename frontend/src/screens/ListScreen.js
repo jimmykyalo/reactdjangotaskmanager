@@ -6,7 +6,7 @@ import Message from '../components/Message';
 import { deleteTasks,  updateTasks } from '../actions/taskActions'
 import Task from '../components/Task';
 import { IoMdAdd } from 'react-icons/io'
-import { FaTrashAlt, FaPlus, FaStar, FaCheck, FaRegStar, FaRegEdit, FaTimes  } from 'react-icons/fa'
+import { FaTrashAlt, FaPlus, FaStar, FaCheck, FaRegStar, FaRegEdit, FaTimes, FaEdit  } from 'react-icons/fa'
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -16,7 +16,8 @@ import { TASK_CREATE_RESET, TASK_DELETE_RESET, TASK_UPDATE_RESET, TASK_UPDATE_SU
 import { Button, Tooltip } from '@mui/material';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import axios from 'axios';
-import { listListDetails } from '../actions/listActions';
+import { listListDetails, updateLists } from '../actions/listActions';
+import { LIST_UPDATE_RESET } from '../constants/listConstants';
 
 function ListScreen({match}) {
   const [selectAll, setSelectAll] = useState(false)
@@ -25,6 +26,7 @@ function ListScreen({match}) {
   const [updatingImportance, setUpdatingImportance] = useState(false)
   const [markingId, setMarkingId] = useState(0)
   const [changesArray, setChangesArray] = useState([])
+  const [editListMode, setEditListMode] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -42,6 +44,11 @@ function ListScreen({match}) {
 
   const taskDelete = useSelector(state=>state.taskDelete)
   const {success:successDelete, loading:loadingDelete, error: errorDelete} = taskDelete
+
+  const listUpdate = useSelector(state=>state.listUpdate)
+  const {success:successListUpdate, error: errorListUpdate} = listUpdate
+
+  
 
   
 
@@ -61,9 +68,23 @@ function ListScreen({match}) {
       dispatch({type:TASK_DELETE_RESET})
     }
 
+    if (successListUpdate){
+      setEditListMode(false)
+      dispatch({type:LIST_UPDATE_RESET})
+    }
+
+    if (errorUpdate){
+      
+      setTimeout(() => {
+        dispatch({type:TASK_UPDATE_RESET})
+      }, 2500);
+      
+    }
+
     
     
-  }, [dispatch, userInfo, successCreate, successUpdate, successDelete])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, userInfo, successCreate, successUpdate, successListUpdate, successDelete])
 
   const [value, setValue] = React.useState('1');
 
@@ -145,13 +166,18 @@ function ListScreen({match}) {
   return (
     <Container fluid className='home d-flex flex-column'>
       <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
-      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete ? <Message severity={'error'}>{error || errorUpdate || errorDelete}</Message>:''}
+      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete || errorListUpdate ? <Message  severity={'error'}>{error || errorUpdate || errorDelete || errorListUpdate}</Message>:''}
       <>
-        <div className='menu-bar d-flex flex-row'>
-          <h2 className="menu-bar-heading">
-            {list.name} List
-            <div className="menu-bar-heading-description">{list.description}</div>
-          </h2>
+        <div className='menu-bar d-flex flex-row mt-2'>
+          <div className="menu-bar-heading">
+            <h2 onBlur={(e)=>dispatch(updateLists([{_id:match.params.id, attribute:'name', value:e.target.innerText}]))} contentEditable={editListMode} suppressContentEditableWarning className='menu-bar-heading-text'>{list.name}</h2>
+            <div onBlur={(e)=>dispatch(updateLists([{_id:match.params.id, attribute:'description', value:e.target.innerText}]))} contentEditable={editListMode} suppressContentEditableWarning className="menu-bar-heading-description">{list.description}</div>
+          </div>
+          <Tooltip arrow title="Edit List Details">
+              <span className='menu-bar-buttons-edit'>
+                <FaEdit onClick={()=>setEditListMode(!editListMode)} className='menu-bar-buttons-icon'  />
+              </span>
+            </Tooltip>
           
           <div className="menu-bar-buttons">
             {value==='2' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
@@ -210,7 +236,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {list.tasks.filter(item=>item.important).map(task=>(
+                {list.tasks && list.tasks.filter(item=>item.important).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
@@ -225,7 +251,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {list.tasks.filter(item=>!item.completed).map(task=>(
+                {list.tasks && list.tasks.filter(item=>!item.completed).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
@@ -241,7 +267,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {list.tasks.filter(item=>item.completed).map(task=>(
+                {list.tasks && list.tasks.filter(item=>item.completed).map(task=>(
                     <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>

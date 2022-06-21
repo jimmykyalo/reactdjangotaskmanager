@@ -12,6 +12,7 @@ from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from dateutil.parser import parse
+from dateutil.parser._parser import ParserError
 # Create your views here.
 
 @api_view(['GET'])
@@ -99,25 +100,29 @@ def createTask(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateTasks(request):
-    data = request.data
-    taskList = list()
-    print(data)
-    for i in data:
-        task = Task.objects.get(_id=i['_id'])
-        if i['attribute'] =='startTime' or i['attribute'] =='endTime':
-            setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
-        elif i['attribute'] =='list':
-            _list = List.objects.get(_id=int(i['value']))
-            setattr(task, i['attribute'], _list)
-        else :
-            setattr(task, i['attribute'], i['value'])
-        task.save()
-        taskList.append(task)
-    
-    serializer=TaskSerializer(taskList, many=True)
-    
-    
-    return Response(serializer.data)
+    try:
+        data = request.data
+        taskList = list()
+        print(data)
+        for i in data:
+            task = Task.objects.get(_id=i['_id'])
+            if i['attribute'] =='startTime' or i['attribute'] =='endTime' or i['attribute'] =='completedTime':
+                setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
+            elif i['attribute'] =='list':
+                _list = List.objects.get(_id=int(i['value']))
+                setattr(task, i['attribute'], _list)
+            else :
+                setattr(task, i['attribute'], i['value'])
+            task.save()
+            taskList.append(task)
+        
+        serializer=TaskSerializer(taskList, many=True)
+        
+        
+        return Response(serializer.data)
+    except ParserError:
+        message = {'detail': 'Please enter a valid date and time format'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -195,10 +200,10 @@ def updateLists(request):
     listList = list()
     print(data)
     for i in data:
-        list = List.objects.get(_id=i['_id'])
-        setattr(list, i['attribute'], i['value'])
-        list.save()
-        listList.append(list)
+        _list = List.objects.get(_id=i['_id'])
+        setattr(_list, i['attribute'], i['value'])
+        _list.save()
+        listList.append(_list)
     
     serializer=ListSerializer(listList, many=True)
     

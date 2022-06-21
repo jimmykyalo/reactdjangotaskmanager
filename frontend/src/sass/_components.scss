@@ -20,7 +20,7 @@
         color: $color-primary;
         &-buttons-icon{
             fill: $color-primary;
-            transition: all .3s ease;
+            transition: all .1s ease;
             cursor: pointer;
 
             &:hover{
@@ -257,9 +257,7 @@
     &:not(:first-child){
         margin-top: .5rem;
     }
-    &>*:not(:last-child){
-        
-    }
+    
 
     &:hover{
         .task-actions-icon{
@@ -419,14 +417,25 @@
     
     &-heading{
         margin-bottom: 0;
-        line-height: 24px;
+        line-height: 1;
         color: var(--color-grey-light-1);
         font-weight: 400;
         font-size: 1.5rem;
 
+        &-text{
+            margin-bottom: .25rem;
+            &[contenteditable="true"] {
+                border: 1px dashed $color-primary;
+            }
+        }
+
         &-description{
             font-size: 14px;
             color: var(--color-grey-light-4);
+            &[contenteditable="true"] {
+                border: 1px dashed $color-primary;
+            }
+            padding-bottom: .25rem;
         }
     }
 
@@ -437,6 +446,11 @@
             margin-right: 1.5rem;
             
 
+        }
+
+        &-edit{
+            align-self: center;
+            margin-left: 1rem;
         }
         
         &-icon{

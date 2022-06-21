@@ -85,6 +85,14 @@ const classes = useStyles()
       dispatch({type:TASK_UPDATE_RESET})
     }
 
+    if (errorUpdate){
+      
+      setTimeout(() => {
+        dispatch({type:TASK_UPDATE_RESET})
+      }, 5000);
+      
+    }
+
     if (successDelete){
       dispatch({type:TASK_DELETE_RESET})
     }    

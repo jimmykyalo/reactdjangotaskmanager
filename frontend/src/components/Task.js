@@ -21,7 +21,8 @@ function Task({task, setSelectAll, selectAll, editMode, changedImportance, updat
           <div contentEditable={task.endTime && editMode} onBlur={(e)=>dispatch(updateTasks([{_id:task._id, attribute:'endTime', value:e.target.innerText.replace('End:','')}]))} suppressContentEditableWarning={true} className="task-details-name fw-normal text-black my-0">{task.endTime ? 'End:':''}  {task.endTime && (new Date(task.endTime)).toLocaleString('en-AU')}</div>
         </div>}
         {task.completed && <div className="task-details">
-          <div style={{lineHeight:1.5}} contentEditable={task.completedTime && editMode} onBlur={(e)=>console.log(e.target.innerText)} suppressContentEditableWarning={true} className="task-details-name my-0">{task.completedTime ? 'Completed on':''} <br></br>{task.completedTime &&(new Date(task.completedTime)).toLocaleString('en-AU')}</div>
+          <div>Completed On:</div>
+          <div style={{lineHeight:1.5}} contentEditable={task.completedTime && editMode} onBlur={(e)=>dispatch(updateTasks([{_id:task._id, attribute:'completedTime', value:e.target.innerText}]))} suppressContentEditableWarning={true} className="task-details-name my-0">{task.completedTime &&(new Date(task.completedTime)).toLocaleString('en-AU')}</div>
         </div>}
         <div className="task-description" contentEditable={editMode} onBlur={(e)=>dispatch(updateTasks([{_id:task._id, attribute:'description', value:e.target.innerText}]))} suppressContentEditableWarning={true}>{task.description}</div>
         <div className='task-actions'>

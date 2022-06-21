@@ -102,7 +102,7 @@ body {
     color: #5946D2; }
     .sidebar-list-title-buttons-icon {
       fill: #5946D2;
-      transition: all .3s ease;
+      transition: all .1s ease;
       cursor: pointer; }
       .sidebar-list-title-buttons-icon:hover {
         fill: #231966; }
@@ -396,17 +396,27 @@ body {
   color: #fff; }
   .menu-bar-heading {
     margin-bottom: 0;
-    line-height: 24px;
+    line-height: 1;
     color: var(--color-grey-light-1);
     font-weight: 400;
     font-size: 1.5rem; }
+    .menu-bar-heading-text {
+      margin-bottom: .25rem; }
+      .menu-bar-heading-text[contenteditable="true"] {
+        border: 1px dashed #5946D2; }
     .menu-bar-heading-description {
       font-size: 14px;
-      color: var(--color-grey-light-4); }
+      color: var(--color-grey-light-4);
+      padding-bottom: .25rem; }
+      .menu-bar-heading-description[contenteditable="true"] {
+        border: 1px dashed #5946D2; }
   .menu-bar-buttons {
     margin-left: auto; }
     .menu-bar-buttons span {
       margin-right: 1.5rem; }
+    .menu-bar-buttons-edit {
+      align-self: center;
+      margin-left: 1rem; }
     .menu-bar-buttons-icon {
       width: 1.25rem;
       height: 1.25rem;

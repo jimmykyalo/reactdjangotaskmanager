@@ -108,7 +108,7 @@ export const listDeleteReducer = (state = {}, action) => {
     }
 }
 
-export const listUpdateReducer = (state = { list: {} }, action) => {
+export const listUpdateReducer = (state = { list: {tasks:[]} }, action) => {
     switch (action.type) {
         case LIST_UPDATE_REQUEST:
             return { loading: true }
@@ -120,7 +120,7 @@ export const listUpdateReducer = (state = { list: {} }, action) => {
             return { loading: false, error: action.payload }
 
         case LIST_UPDATE_RESET:
-            return { list: {} }
+            return { list: {tasks:[]} }
 
         default:
             return state
