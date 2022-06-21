@@ -4,6 +4,7 @@ import HomeScreen from './screens/HomeScreen';
 import { Container } from 'react-bootstrap'
 import Header from './components/Header';
 import { useState } from 'react';
+import ListScreen from './screens/ListScreen';
 
 function App() {
   const [isOpen, setIsOpen] = useState(true)
@@ -17,6 +18,7 @@ function App() {
           <Header isOpen={isOpen} setIsOpen={setIsOpen} />
           
           <Route path={'/'} exact component={HomeScreen} />
+          <Route path='/list/:id/' component={ListScreen} exact />
           <Route path={'/important'} >
             <HomeScreen important />
           </Route>

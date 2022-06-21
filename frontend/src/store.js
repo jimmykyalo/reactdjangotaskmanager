@@ -20,6 +20,15 @@ import {
    
 } from './reducers/taskReducers'
 
+import {
+    listCreateReducer,
+    listDetailsReducer,
+    listListReducer,
+    listDeleteReducer,
+    listUpdateReducer,
+   
+} from './reducers/listReducers'
+
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
@@ -33,6 +42,12 @@ const reducer = combineReducers({
     taskList: taskListReducer,
     taskDelete: taskDeleteReducer,
     taskUpdate: taskUpdateReducer,
+
+    listCreate: listCreateReducer,
+    listDetails: listDetailsReducer,
+    listList: listListReducer,
+    listDelete: listDeleteReducer,
+    listUpdate: listUpdateReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?

@@ -34,8 +34,8 @@ def getTaskById(request, id):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def getListById(request, id):
-    list = List.objects.get(_id=id)
+def getListById(request, pk):
+    list = List.objects.get(_id=pk)
     serializer = ListSerializer(list, many=False)
     return Response(serializer.data)
 
@@ -49,6 +49,7 @@ def createList(request):
         user=None
     list = List.objects.create(
         name=data['name'],
+        description=data['description'],
         user=user
     )
     serializer = ListSerializer(list, many=False)
@@ -105,7 +106,10 @@ def updateTasks(request):
         task = Task.objects.get(_id=i['_id'])
         if i['attribute'] =='startTime' or i['attribute'] =='endTime':
             setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
-        else:
+        elif i['attribute'] =='list':
+            _list = List.objects.get(_id=int(i['value']))
+            setattr(task, i['attribute'], _list)
+        else :
             setattr(task, i['attribute'], i['value'])
         task.save()
         taskList.append(task)

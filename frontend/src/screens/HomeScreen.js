@@ -14,16 +14,20 @@ import TabPanel from '@mui/lab/TabPanel';
 import AddTaskForm from '../components/AddTaskForm';
 import { TASK_CREATE_RESET, TASK_DELETE_RESET, TASK_UPDATE_RESET, TASK_UPDATE_SUCCESS } from '../constants/taskConstants'
 import { Button, Tooltip } from '@mui/material';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom'
 
 function HomeScreen({important}) {
+  const history = useHistory()
   const [selectAll, setSelectAll] = useState(false)
   const [taskModal, setTaskModal] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [updatingImportance, setUpdatingImportance] = useState(false)
   const [markingId, setMarkingId] = useState(0)
   const [changesArray, setChangesArray] = useState([])
+  const [selectedList, setSelectedList] = useState(0)
 
   const dispatch = useDispatch()
 
@@ -32,6 +36,9 @@ function HomeScreen({important}) {
 
   const taskList = useSelector(state=>state.taskList)
   const {loading, error, tasks } = taskList
+
+  const listList = useSelector(state=>state.listList)
+  const {loading:loadingList, error:errorList, lists } = listList
 
   const taskCreate = useSelector(state=>state.taskCreate)
   const {success:successCreate} = taskCreate
@@ -58,10 +65,7 @@ function HomeScreen({important}) {
 
     if (successDelete){
       dispatch({type:TASK_DELETE_RESET})
-    }
-
-    
-    
+    }    
   }, [dispatch, userInfo, successCreate, successUpdate, successDelete])
 
   const [value, setValue] = React.useState('1');
@@ -138,13 +142,25 @@ function HomeScreen({important}) {
     }
   }
 
+  const handleListChange = (e) => {
+    var elementsArray = ([...document.getElementsByClassName("form-check-input")]).filter(item=>item.checked && item.dataset.id)
+    if(elementsArray.length===0){
+      alert('No tasks Selected')
+      return;
+    }
+    userInfo && handleUpdateStatus('list', e.target.value)
+    setSelectedList(e.target.value);
+    history.push(`/list/${e.target.value}/`)
+    
+  };
+
   
 
   
   return (
     <Container fluid className='home d-flex flex-column'>
       <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
-      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete ? <Message severity='error'>{error || errorUpdate || errorDelete}</Message>:''}
+      {loading || loadingUpdate || loadingDelete || loadingList ?<Loader /> : error || errorUpdate || errorDelete || errorList ? <Message severity='error'>{error || errorUpdate || errorDelete || errorList}</Message>:''}
       <>
         <div className='menu-bar d-flex flex-row'>
           <h2 className="menu-bar-heading">
@@ -173,6 +189,26 @@ function HomeScreen({important}) {
             <Tooltip arrow title="Add New Task">
               <span>
                 <FaPlus onClick={()=>setTaskModal(true)} className='menu-bar-buttons-icon' />
+              </span>
+            </Tooltip>
+
+            <Tooltip arrow title="Add To List">
+              <span>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedList}
+                label="List"
+                onChange={handleListChange}
+                size='small'
+                color='primary'
+                sx={{color:'#fff', outlineColor:'#fff'}}
+              >
+                <MenuItem disabled value={0}>List</MenuItem>
+                {lists.map(list=>(
+                  <MenuItem key={list._id} value={list._id}>{list.name}</MenuItem>
+                ))}
+              </Select>
               </span>
             </Tooltip>
 

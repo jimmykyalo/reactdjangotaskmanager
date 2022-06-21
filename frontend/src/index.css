@@ -98,6 +98,17 @@ body {
   .sidebar.fixed {
     position: fixed;
     z-index: 1030; }
+  .sidebar-list-title {
+    color: #5946D2; }
+    .sidebar-list-title-buttons-icon {
+      fill: #5946D2;
+      transition: all .3s ease;
+      cursor: pointer; }
+      .sidebar-list-title-buttons-icon:hover {
+        fill: #231966; }
+      .sidebar-list-title-buttons-icon:active {
+        fill: #5946D2;
+        transform: scale(0.95) translateY(2px); }
   @media only screen and (max-width: 1200px) {
     .sidebar {
       width: 100px;
@@ -389,6 +400,9 @@ body {
     color: var(--color-grey-light-1);
     font-weight: 400;
     font-size: 1.5rem; }
+    .menu-bar-heading-description {
+      font-size: 14px;
+      color: var(--color-grey-light-4); }
   .menu-bar-buttons {
     margin-left: auto; }
     .menu-bar-buttons span {

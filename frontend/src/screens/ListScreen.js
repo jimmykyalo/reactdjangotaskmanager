@@ -3,7 +3,7 @@ import {  ListGroup, Spinner, FormCheck, Container } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { deleteTasks, listTasks, updateTasks } from '../actions/taskActions'
+import { deleteTasks,  updateTasks } from '../actions/taskActions'
 import Task from '../components/Task';
 import { IoMdAdd } from 'react-icons/io'
 import { FaTrashAlt, FaPlus, FaStar, FaCheck, FaRegStar, FaRegEdit, FaTimes  } from 'react-icons/fa'
@@ -16,6 +16,7 @@ import { TASK_CREATE_RESET, TASK_DELETE_RESET, TASK_UPDATE_RESET, TASK_UPDATE_SU
 import { Button, Tooltip } from '@mui/material';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import axios from 'axios';
+import { listListDetails } from '../actions/listActions';
 
 function ListScreen({match}) {
   const [selectAll, setSelectAll] = useState(false)
@@ -30,8 +31,8 @@ function ListScreen({match}) {
   const userLogin = useSelector(state=>state.userLogin)
   const {userInfo } = userLogin
 
-  const taskList = useSelector(state=>state.taskList)
-  const {loading, error, tasks } = taskList
+  const listDetails = useSelector(state=>state.listDetails)
+  const {loading, error, list } = listDetails
 
   const taskCreate = useSelector(state=>state.taskCreate)
   const {success:successCreate} = taskCreate
@@ -46,7 +47,7 @@ function ListScreen({match}) {
 
   useEffect(() => {
     setSelectAll(false)
-    userInfo && dispatch(listTasks())
+    userInfo && dispatch(listListDetails(parseInt(match.params.id)))
 
     if (successCreate){
       dispatch({type:TASK_CREATE_RESET})
@@ -128,9 +129,10 @@ function ListScreen({match}) {
           {taskId, attribute},
           config
       )
-      setChangesArray([...changesArray, data._id])
+      
       setUpdatingImportance(false)
       setMarkingId(0)
+      dispatch({type:TASK_UPDATE_SUCCESS})
     } catch (error) {
       setUpdatingImportance(false)
       setMarkingId(0)
@@ -147,8 +149,10 @@ function ListScreen({match}) {
       <>
         <div className='menu-bar d-flex flex-row'>
           <h2 className="menu-bar-heading">
-            Task List
+            {list.name} List
+            <div className="menu-bar-heading-description">{list.description}</div>
           </h2>
+          
           <div className="menu-bar-buttons">
             {value==='2' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
             <Tooltip arrow title="Delete">
@@ -206,7 +210,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {tasks.filter(item=>item.important).map(task=>(
+                {list.tasks.filter(item=>item.important).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
@@ -221,7 +225,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {tasks.filter(item=>!item.completed).map(task=>(
+                {list.tasks.filter(item=>!item.completed).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
@@ -237,7 +241,7 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {tasks.filter(item=>item.completed).map(task=>(
+                {list.tasks.filter(item=>item.completed).map(task=>(
                     <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
