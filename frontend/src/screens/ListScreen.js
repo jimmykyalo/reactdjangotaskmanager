@@ -180,7 +180,7 @@ function ListScreen({match}) {
             </Tooltip>
           
           <div className="menu-bar-buttons">
-            {value==='2' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
+            {value==='3' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
             <Tooltip arrow title="Delete">
               <span>
                 <FaTrashAlt onClick={()=>handleDeleteTasks()} className='menu-bar-buttons-icon' />
