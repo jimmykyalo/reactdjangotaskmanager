@@ -22,7 +22,7 @@ function Header({setIsOpen, isOpen, fixed}) {
       setUserClass('')
     }else{
       setUserClass('index')
-      setShowModal(true)
+      
     }
   
     

@@ -71,13 +71,19 @@ body {
     padding-right: 16px;
     font-size: 14px;
     min-width: 8rem; }
+    .content .navbar .btn:focus {
+      box-shadow: none; }
     .content .navbar .btn-primary {
       background-color: #5946D2; }
+      .content .navbar .btn-primary:hover {
+        background-color: #32238f; }
     .content .navbar .btn-info {
       background-color: #5187ed;
       color: white;
       border-color: #5187ed;
       margin-right: 2rem; }
+      .content .navbar .btn-info:hover {
+        background-color: #1451c4; }
 
 .taskscreen {
   position: relative;
@@ -126,21 +132,21 @@ body {
     display: inline-block;
     vertical-align: middle; }
   .home .inner-header {
-    height: 65vh;
+    height: calc(65vh - 4.2125rem);
     width: 100%;
     margin: 0;
     padding: 0; }
   .home .waves {
     position: relative;
     width: 100%;
-    height: 15vh;
+    height: calc(15vh - 4.2125rem);
     margin-bottom: -7px;
     /*Fix for safari gap*/
     min-height: 100px;
     max-height: 150px; }
   .home .content {
     position: relative;
-    height: 20vh;
+    height: calc(20vh - 4.2125rem);
     text-align: center;
     background-color: white; }
   .home .parallax > use {
