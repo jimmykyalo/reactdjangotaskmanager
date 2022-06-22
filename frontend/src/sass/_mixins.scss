@@ -1,6 +1,10 @@
 @mixin collapsedSidebar {
     width: 100px;
     min-width: 100px;
+    & .sidebar-list-title{
+        width: 0;
+        overflow: hidden;
+    }
     & .sidebar-header-heading{
         width: 0;
         &-text{

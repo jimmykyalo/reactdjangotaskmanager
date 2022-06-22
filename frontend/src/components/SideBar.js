@@ -12,8 +12,10 @@ import Loader from './Loader';
 import Message from './Message';
 import { BsCardChecklist } from 'react-icons/bs';
 import AddListForm from './AddListForm';
+import AddTaskForm from './AddTaskForm';
 
 function SideBar({isOpen, fixed}) {
+  const [addTaskModal, setAddTaskModal] = useState(false)
   const [listModal, setListModal] = useState(false)
   const dispatch = useDispatch()
   const userLogin = useSelector(state=>state.userLogin)
@@ -86,6 +88,13 @@ function SideBar({isOpen, fixed}) {
           <HiChevronRight className='sidebar-link-icon-expand' />
        </NavLink> */}
 
+      <div className="py-2 d-flex align-items-center sidebar-list-title">
+        <span className="sidebar-list-title-text">Tasks:</span>
+        <div className="sidebar-list-title-buttons">
+          <FaPlus onClick={()=>setAddTaskModal(true)} className='sidebar-list-title-buttons-icon' />
+        </div>
+      </div>
+
        <NavLink exact activeClassName='selected' className='sidebar-link' to='/'>
           <FaListAlt style={{fill:'#5187ed'}} className='sidebar-link-icon' />
           <span className='sidebar-link-text'>Tasks</span>
@@ -101,11 +110,12 @@ function SideBar({isOpen, fixed}) {
        <div className="divider"></div>
        <div className="py-2 d-flex align-items-center sidebar-list-title">
         <span className="sidebar-list-title-text">Lists:</span>
-        <div className="ms-auto sidebar-list-title-buttons">
+        <div className="sidebar-list-title-buttons">
           <FaPlus onClick={()=>setListModal(true)} className='sidebar-list-title-buttons-icon' />
         </div>
        </div>
        <AddListForm listShow={listModal} setListShow={setListModal} />
+       <AddTaskForm taskShow={addTaskModal} setTaskShow={setAddTaskModal} />
        {loading || loadingDelete || loadingUpdate ? <Loader />:error || errorDelete || errorUpdate? <Message severity='error'>{error || errorDelete || errorUpdate}</Message>:
             lists.map(list=>(
               <NavLink key={list._id} activeClassName='selected' className='sidebar-link' to={`/list/${list._id}/`}>

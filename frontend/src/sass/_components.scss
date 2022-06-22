@@ -18,18 +18,22 @@
     }
     &-list-title{
         color: $color-primary;
-        &-buttons-icon{
-            fill: $color-primary;
-            transition: all .1s ease;
-            cursor: pointer;
-
-            &:hover{
-                fill: darken($color-primary, 30%);  
-            }
-
-            &:active{
+        &-buttons{
+            flex-grow: 1;
+            text-align: right;
+            &-icon{
                 fill: $color-primary;
-                transform: scale(0.95) translateY(2px); 
+                transition: all .1s ease;
+                cursor: pointer;
+    
+                &:hover{
+                    fill: darken($color-primary, 30%);  
+                }
+    
+                &:active{
+                    fill: $color-primary;
+                    transform: scale(0.95) translateY(2px); 
+                }
             }
         }
     }
@@ -45,6 +49,7 @@
     
 
     &.closed{
+        
         @include collapsedSidebar;
     }
 
