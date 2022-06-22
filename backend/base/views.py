@@ -116,7 +116,7 @@ def updateTasks(request):
     try:
         data = request.data
         taskList = list()
-        print(data)
+        
         for i in data:
             task = Task.objects.get(_id=i['_id'])
             if task.user != request.user:
@@ -229,7 +229,7 @@ def getUserById(request, pk):
 def updateLists(request):
     data = request.data
     listList = list()
-    print(data)
+   
     for i in data:
         _list = List.objects.get(_id=i['_id'])
         if _list.user != request.user:
