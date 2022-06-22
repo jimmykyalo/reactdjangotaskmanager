@@ -62,13 +62,24 @@ body {
         left: 0; } }
     .content .navbar.fixed-top.closed {
       left: 100px; }
+    .content .navbar.fixed-top.index {
+      left: 0; }
+      .content .navbar.fixed-top.index::before {
+        display: none; }
   .content .navbar .btn {
     padding-left: 16px;
     padding-right: 16px;
     font-size: 14px;
-    background-color: #5946D2; }
+    min-width: 8rem; }
+    .content .navbar .btn-primary {
+      background-color: #5946D2; }
+    .content .navbar .btn-info {
+      background-color: #5187ed;
+      color: white;
+      border-color: #5187ed;
+      margin-right: 2rem; }
 
-.home {
+.taskscreen {
   position: relative;
   min-height: calc(100vh - 4.2125rem);
   padding: 4rem;
@@ -76,12 +87,93 @@ body {
   box-shadow: inset 2px 2px 9px -6px rgba(0, 0, 0, 0.3);
   margin-top: 4.2125rem; }
   @media only screen and (max-width: 900px) {
-    .home {
+    .taskscreen {
       padding: 2rem 1rem; } }
 
 .form-label {
   margin-bottom: 0;
   margin-top: 1rem; }
+
+.home {
+  margin: 0;
+  margin-top: 4.2125rem;
+  /* Animation */
+  /*Shrinking for mobile*/ }
+  .home .flex {
+    /*Flexbox for containers*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; }
+  .home h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 48px; }
+  .home p {
+    letter-spacing: 1px;
+    font-size: 14px;
+    color: #333333;
+    line-height: 24px; }
+  .home .header {
+    position: relative;
+    text-align: center;
+    background: linear-gradient(60deg, #543ab7 0%, #00acc1 100%);
+    color: white; }
+  .home .logo {
+    width: 50px;
+    fill: white;
+    padding-right: 15px;
+    display: inline-block;
+    vertical-align: middle; }
+  .home .inner-header {
+    height: 65vh;
+    width: 100%;
+    margin: 0;
+    padding: 0; }
+  .home .waves {
+    position: relative;
+    width: 100%;
+    height: 15vh;
+    margin-bottom: -7px;
+    /*Fix for safari gap*/
+    min-height: 100px;
+    max-height: 150px; }
+  .home .content {
+    position: relative;
+    height: 20vh;
+    text-align: center;
+    background-color: white; }
+  .home .parallax > use {
+    animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite; }
+  .home .parallax > use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s; }
+  .home .parallax > use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s; }
+  .home .parallax > use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s; }
+  .home .parallax > use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s; }
+  @media (max-width: 768px) {
+    .home .waves {
+      height: 40px;
+      min-height: 40px; }
+    .home .content {
+      height: 30vh; }
+    .home h1 {
+      font-size: 24px; } }
+
+.login .modal-content {
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25); }
+
+.modal-backdrop.login {
+  background-color: transparent; }
 
 .sidebar {
   position: relative;
@@ -297,12 +389,10 @@ body {
   flex-shrink: 0;
   padding-top: .5rem;
   padding-bottom: .5rem;
-  background: var(--color-grey-light-1);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18); }
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25); }
   .task:not(:first-child) {
     margin-top: .5rem; }
   .task:hover .task-actions-icon {
@@ -325,7 +415,7 @@ body {
       .task-details-name[contenteditable="true"] {
         border: 1px dashed #5946D2; }
     .task-details-date {
-      color: var(--color-grey-dark-4); }
+      color: var(--color-grey-dark-3); }
       .task-details-date[contenteditable="true"] {
         border: 1px dashed #5946D2; }
   .task-description {
@@ -536,3 +626,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     opacity: 1;
     -webkit-transform: translateY(0);
     transform: translateY(0); } }
+
+@keyframes move-forever {
+  0% {
+    transform: translate3d(-90px, 0, 0); }
+  100% {
+    transform: translate3d(85px, 0, 0); } }

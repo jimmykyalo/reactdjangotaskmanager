@@ -7,7 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useSelector, useDispatch } from 'react-redux'
 import { LIST_CREATE_RESET, LIST_DELETE_RESET, LIST_UPDATE_RESET } from '../constants/listConstants'
-import { deleteLists, listLists, updateLists } from '../actions/listActions'
+import {listLists } from '../actions/listActions'
 import Loader from './Loader';
 import Message from './Message';
 import { BsCardChecklist } from 'react-icons/bs';
@@ -21,7 +21,6 @@ function SideBar({isOpen, fixed}) {
   const userLogin = useSelector(state=>state.userLogin)
   const {userInfo } = userLogin
   
-  const [editListMode, setEditListMode] = useState(false)
   const listList = useSelector(state=>state.listList)
   const {loading, error, lists } = listList
 
@@ -44,7 +43,7 @@ function SideBar({isOpen, fixed}) {
       dispatch({type:LIST_CREATE_RESET})
     }
     if (successUpdate){
-      setEditListMode(false)
+      
       dispatch({type:LIST_UPDATE_RESET})
     }
 
@@ -61,10 +60,10 @@ function SideBar({isOpen, fixed}) {
         
        <div className="sidebar-header">
           <div className="sidebar-header-heading">
-            <Avatar sx={{backgroundColor:'#5946D2'}} className="sidebar-header-heading-icon">JK</Avatar>
+            <Avatar sx={{backgroundColor:'#5946D2'}} className="sidebar-header-heading-icon">{userInfo.initials}</Avatar>
             <div className="sidebar-header-heading-text">
-                <span className="sidebar-header-heading-text-name">Jimmy Kyalo</span>
-                <span className="sidebar-header-heading-text-email">jimm.kyalo@gmail.com</span>
+                <span className="sidebar-header-heading-text-name">{userInfo.name}</span>
+                <span className="sidebar-header-heading-text-email">{userInfo.username}</span>
             </div>
           </div>
           
@@ -95,13 +94,13 @@ function SideBar({isOpen, fixed}) {
         </div>
       </div>
 
-       <NavLink exact activeClassName='selected' className='sidebar-link' to='/'>
+       <NavLink exact activeClassName='selected' className='sidebar-link' to='/tasks'>
           <FaListAlt style={{fill:'#5187ed'}} className='sidebar-link-icon' />
           <span className='sidebar-link-text'>Tasks</span>
           <HiChevronRight className='sidebar-link-icon-expand' />
        </NavLink>
 
-       <NavLink activeClassName='selected' className='sidebar-link' to='/important'>
+       <NavLink activeClassName='selected' className='sidebar-link' to='/tasks/important'>
           <FaStar style={{fill:'#F85977'}} className='sidebar-link-icon' />
           <span className='sidebar-link-text'>Important</span>
           <HiChevronRight className='sidebar-link-icon-expand' />

@@ -173,16 +173,16 @@ def registerUser(request):
     try:
         user = User.objects.create(
             first_name=data['firstName'],
+            last_name=data['lastName'],
             username=data['email'],
             email=data['email'],
             password=make_password(data['password']),
-            last_name=data['lastName']
         )
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
 
     except IntegrityError:
-        message = {'detail': 'User with email or phone number already exists'}
+        message = {'detail': 'User with given email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 

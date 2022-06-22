@@ -3,9 +3,9 @@ import {  ListGroup, FormCheck, Container } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { deleteTasks,  updateTasks } from '../actions/taskActions'
+import { deleteTasks, listTasks, updateTasks } from '../actions/taskActions'
 import Task from '../components/Task';
-import { FaTrashAlt, FaPlus, FaStar, FaCheck, FaRegStar, FaRegEdit, FaTimes, FaEdit  } from 'react-icons/fa'
+import { FaTrashAlt, FaPlus, FaStar, FaCheck, FaRegStar, FaRegEdit, FaTimes  } from 'react-icons/fa'
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -13,25 +13,31 @@ import TabPanel from '@mui/lab/TabPanel';
 import AddTaskForm from '../components/AddTaskForm';
 import { TASK_CREATE_RESET, TASK_DELETE_RESET, TASK_UPDATE_RESET, TASK_UPDATE_SUCCESS } from '../constants/taskConstants'
 import { Button, Tooltip } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import axios from 'axios';
-import { listListDetails, updateLists } from '../actions/listActions';
-import { LIST_UPDATE_RESET } from '../constants/listConstants';
+import { useHistory } from 'react-router-dom'
+import { makeStyles } from '@mui/styles';
 
-function ListScreen({match}) {
+function TasksScreen({important}) {
+  const history = useHistory()
   const [selectAll, setSelectAll] = useState(false)
   const [taskModal, setTaskModal] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [markingId, setMarkingId] = useState(0)
   const [changesArray, setChangesArray] = useState([])
-  const [editListMode, setEditListMode] = useState(false)
+  const [selectedList, setSelectedList] = useState(0)
 
   const dispatch = useDispatch()
 
   const userLogin = useSelector(state=>state.userLogin)
   const {userInfo } = userLogin
 
-  const listDetails = useSelector(state=>state.listDetails)
-  const {loading, error, list } = listDetails
+  const taskList = useSelector(state=>state.taskList)
+  const {loading, error, tasks } = taskList
+
+  const listList = useSelector(state=>state.listList)
+  const {loading:loadingList, error:errorList, lists } = listList
 
   const taskCreate = useSelector(state=>state.taskCreate)
   const {success:successCreate} = taskCreate
@@ -42,46 +48,58 @@ function ListScreen({match}) {
   const taskDelete = useSelector(state=>state.taskDelete)
   const {success:successDelete, loading:loadingDelete, error: errorDelete} = taskDelete
 
-  const listUpdate = useSelector(state=>state.listUpdate)
-  const {success:successListUpdate, error: errorListUpdate} = listUpdate
+  const useStyles = makeStyles({
+    select: {
+        '&:before': {
+            borderColor: 'white',
+        },
+        '&:after': {
+            borderColor: 'white',
+        },
+        '&:not(.Mui-disabled):hover::before': {
+            borderColor: 'white',
+        },
+    },
+    icon: {
+        fill: 'white',
+    },
+    root: {
+        color: 'white',
+    },
+})
 
-  
-
+const classes = useStyles()
   
 
   useEffect(() => {
     setSelectAll(false)
-    userInfo && dispatch(listListDetails(parseInt(match.params.id)))
-
-    if (successCreate){
-      dispatch({type:TASK_CREATE_RESET})
+    if(!userInfo){
+      history.push('/')
     }
-    if (successUpdate){
+    else{
+      dispatch(listTasks())
+      if (successCreate){
+        dispatch({type:TASK_CREATE_RESET})
+      }
+      if (successUpdate){
         setEditMode(false)
         dispatch({type:TASK_UPDATE_RESET})
-    }
+      }
 
-    if (successDelete){
-      dispatch({type:TASK_DELETE_RESET})
-    }
+      if (errorUpdate){
+        
+        setTimeout(() => {
+          dispatch({type:TASK_UPDATE_RESET})
+        }, 5000);
+        
+      }
 
-    if (successListUpdate){
-      setEditListMode(false)
-      dispatch({type:LIST_UPDATE_RESET})
-    }
-
-    if (errorUpdate){
-      
-      setTimeout(() => {
-        dispatch({type:TASK_UPDATE_RESET})
-      }, 2500);
-      
-    }
-
-    
-    
+      if (successDelete){
+        dispatch({type:TASK_DELETE_RESET})
+      }
+    } 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, userInfo, successCreate, successUpdate, successListUpdate, successDelete])
+  }, [dispatch, userInfo, successCreate, successUpdate, successDelete])
 
   const [value, setValue] = React.useState('1');
 
@@ -132,6 +150,7 @@ function ListScreen({match}) {
 
   const markImportanceHandler = async(taskId) =>{
     setMarkingId(taskId)
+    
     const attribute = 'important'
     try {
       const config = {
@@ -146,14 +165,27 @@ function ListScreen({match}) {
           {taskId, attribute},
           config
       )
+      setChangesArray([...changesArray, data._id])
       
       setMarkingId(0)
-      setChangesArray([...changesArray, data._id])
-      dispatch({type:TASK_UPDATE_SUCCESS})
+      important && dispatch({type:TASK_UPDATE_SUCCESS})
     } catch (error) {
+      
       setMarkingId(0)
     }
   }
+
+  const handleListChange = (e) => {
+    var elementsArray = ([...document.getElementsByClassName("form-check-input")]).filter(item=>item.checked && item.dataset.id)
+    if(elementsArray.length===0){
+      alert('No tasks Selected')
+      return;
+    }
+    userInfo && handleUpdateStatus('list', e.target.value)
+    setSelectedList(e.target.value);
+    history.push(`/list/${e.target.value}/`)
+    
+  };
 
   
 
@@ -161,21 +193,14 @@ function ListScreen({match}) {
   return (
     <Container fluid className='taskscreen d-flex flex-column'>
       <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
-      {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete || errorListUpdate ? <Message  severity={'error'}>{error || errorUpdate || errorDelete || errorListUpdate}</Message>:''}
+      {loading || loadingUpdate || loadingDelete || loadingList ?<Loader /> : error || errorUpdate || errorDelete || errorList ? <Message severity='error'>{error || errorUpdate || errorDelete || errorList}</Message>:''}
       <>
-        <div className='menu-bar d-flex flex-row mt-2'>
-          <div className="menu-bar-heading">
-            <h2 onBlur={(e)=>dispatch(updateLists([{_id:match.params.id, attribute:'name', value:e.target.innerText}]))} contentEditable={editListMode} suppressContentEditableWarning className='menu-bar-heading-text'>{list.name}</h2>
-            <div onBlur={(e)=>dispatch(updateLists([{_id:match.params.id, attribute:'description', value:e.target.innerText}]))} contentEditable={editListMode} suppressContentEditableWarning className="menu-bar-heading-description">{list.description}</div>
-          </div>
-          <Tooltip arrow title="Edit List Details">
-              <span className='menu-bar-buttons-edit'>
-                <FaEdit onClick={()=>setEditListMode(!editListMode)} className='menu-bar-buttons-icon'  />
-              </span>
-            </Tooltip>
-          
+        <div className='menu-bar d-flex flex-row'>
+          <h2 className="menu-bar-heading">
+            Task List
+          </h2>
           <div className="menu-bar-buttons">
-            {value==='3' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
+            {value==='2' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
             <Tooltip arrow title="Delete">
               <span>
                 <FaTrashAlt onClick={()=>handleDeleteTasks()} className='menu-bar-buttons-icon' />
@@ -200,25 +225,47 @@ function ListScreen({match}) {
               </span>
             </Tooltip>
 
+            <Tooltip arrow title="Add To List">
+              <span>
+              <Select
+                className={classes.select}
+                inputProps={{
+                    classes: {
+                        icon: classes.icon,
+                        root: classes.root,
+                    },
+                }}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedList}
+                label="List"
+                onChange={handleListChange}
+                size='small'
+                variant='standard'
+                sx={{color:'#fff', outlineColor:'#fff'}}
+              >
+                <MenuItem disabled value={0}>List</MenuItem>
+                {lists.map(list=>(
+                  <MenuItem key={list._id} value={list._id}>{list.name}</MenuItem>
+                ))}
+              </Select>
+              </span>
+            </Tooltip>
+
             
             
           </div>
         </div>
         
           <TabContext value={value}>
-          
        
-              <TabList onChange={handleChange} aria-label="List Tabs">
+              <TabList onChange={handleChange} aria-label="lab API tabs example">
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-                        width: 'auto'
-                    }}} label="Important" value="1" />
-
+      width: 'auto'
+    }}} label="To do" value="1" />
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-                        width: 'auto'
-                    }}} label="To do" value="2" />
-                <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-                        width: 'auto'
-                    }}} label="Completed" value="3" />
+      width: 'auto'
+    }}} label="Completed" value="2" />
                 
               </TabList>
             
@@ -231,28 +278,12 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {list.tasks && list.tasks.filter(item=>item.important).map(task=>(
+                {tasks.filter(item=>important?!item.completed && item.important:!item.completed).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
-
-            <TabPanel sx={{padding:'1rem 0'}} value="2">
-              <div className="controls">
-                <FormCheck className='select-all' checked={selectAll} onChange={(e)=>handleSelectAll(e.target.checked)} label='Select All' />
-                <div className="controls-edit-buttons">
-                  <Button onClick={()=>setEditMode(!editMode)} size='small' color='inherit' variant="outlined" startIcon={<FaRegEdit />}>{editMode?'Disable':'Edit'}</Button>
-                  
-                </div>
-              </div>
-              <ListGroup className='task-list'>
-                {list.tasks && list.tasks.filter(item=>!item.completed).map(task=>(
-                    <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
-                ))}
-              </ListGroup>
-            </TabPanel>
-
-            <TabPanel  sx={{padding:'1rem 0'}} value="3">
+            <TabPanel  sx={{padding:'1rem 0'}} value="2">
               <div className="controls">
                 <FormCheck className='select-all' checked={selectAll} onChange={(e)=>handleSelectAll(e.target.checked)} label='Select All' />
                 <div className="controls-edit-buttons">
@@ -262,15 +293,11 @@ function ListScreen({match}) {
                 </div>
               </div>
               <ListGroup className='task-list'>
-                {list.tasks && list.tasks.filter(item=>item.completed).map(task=>(
+                {tasks.filter(item=>important?item.completed && item.important:item.completed).map(task=>(
                     <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
-
-            
-
-            
             
           </TabContext>
         </>      
@@ -282,4 +309,4 @@ function ListScreen({match}) {
   )
 }
 
-export default ListScreen
+export default TasksScreen
