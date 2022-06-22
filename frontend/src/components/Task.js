@@ -4,7 +4,7 @@ import { BsCheckLg, BsStar, BsStarFill, BsTrash } from 'react-icons/bs';
 import { FaTimes } from 'react-icons/fa';
 import {  updateTasks, deleteTasks } from '../actions/taskActions'
 import { useDispatch } from 'react-redux'
-function Task({task, setSelectAll, selectAll, editMode, changedImportance, updatingImportance, clickfunction}) {
+function Task({task, setSelectAll, selectAll, editMode, changedImportance, updatingImportance, clickfunction, listId}) {
   const dispatch = useDispatch()
   
   return (
@@ -31,7 +31,7 @@ function Task({task, setSelectAll, selectAll, editMode, changedImportance, updat
           </div>
 
           <div className="task-actions-icon">
-              <BsTrash onClick={()=>window.confirm(`Permanently Delete this task "${task.name}"? This action is irreversible`) && dispatch(deleteTasks([{_id:task._id}]))} className='task-actions-icon-delete' />
+              <BsTrash onClick={()=>listId? dispatch(updateTasks([{_id:task._id, attribute:'list', value:null}])):window.confirm(`Permanently Delete this task "${task.name}"? This action is irreversible`) && dispatch(deleteTasks([{_id:task._id}]))} className='task-actions-icon-delete' />
           </div>
 
           <div className="task-actions-icon opacity-100">

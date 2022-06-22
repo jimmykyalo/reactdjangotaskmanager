@@ -106,7 +106,7 @@ function ListScreen({match}) {
   }
 
   const handleDeleteTasks = ()=>{
-    
+    const attribute='list'
     var elementsArray = ([...document.getElementsByClassName("form-check-input")]).filter(item=>item.checked && item.dataset.id)
     if(elementsArray.length===0){
       alert('No tasks Selected')
@@ -114,10 +114,10 @@ function ListScreen({match}) {
     }
     
     var tasksArray = elementsArray.map(element => {
-        return {_id:element.dataset.id}
+        return {_id:element.dataset.id, attribute, value:null}
     });
     
-    window.confirm(`Permanently Delete this task(s)? This action is irreversible`) && dispatch(deleteTasks(tasksArray))
+    dispatch(updateTasks(tasksArray))
   }
 
   const handleSelectAll =(value)=>{
@@ -176,7 +176,7 @@ function ListScreen({match}) {
           
           <div className="menu-bar-buttons">
             {value==='3' ? <Tooltip arrow title="Mark as Incomplete"><span><FaTimes onClick={()=>handleUpdateStatus('completed', false)} className='menu-bar-buttons-icon' /></span></Tooltip>:<Tooltip arrow title="Mark as Complete"><span><FaCheck onClick={()=>handleUpdateStatus('completed', true)} className='menu-bar-buttons-icon' /></span></Tooltip>}
-            <Tooltip arrow title="Delete">
+            <Tooltip arrow title="Remove from List">
               <span>
                 <FaTrashAlt onClick={()=>handleDeleteTasks()} className='menu-bar-buttons-icon' />
               </span>
@@ -234,7 +234,7 @@ function ListScreen({match}) {
               {(list.tasks && list.tasks.length===0) && <div className='text-white'>No Saved tasks</div>}
               <ListGroup className='task-list'>
                 {list.tasks && list.tasks.filter(item=>item.important).map(task=>(
-                    <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                    <Task listId={match.params.id} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
@@ -249,7 +249,7 @@ function ListScreen({match}) {
               </div>
               <ListGroup className='task-list'>
                 {list.tasks && list.tasks.filter(item=>!item.completed).map(task=>(
-                    <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                    <Task listId={match.params.id} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>
@@ -265,7 +265,7 @@ function ListScreen({match}) {
               </div>
               <ListGroup className='task-list'>
                 {list.tasks && list.tasks.filter(item=>item.completed).map(task=>(
-                    <Task clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
+                    <Task listId={match.params.id} clickfunction={()=>markImportanceHandler(task._id)} changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} updatingImportance={task._id===markingId} completed editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />
                 ))}
               </ListGroup>
             </TabPanel>

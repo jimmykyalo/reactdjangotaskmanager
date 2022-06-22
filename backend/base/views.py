@@ -125,7 +125,10 @@ def updateTasks(request):
             if i['attribute'] =='startTime' or i['attribute'] =='endTime' or i['attribute'] =='completedTime':
                 setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
             elif i['attribute'] =='list':
-                _list = List.objects.get(_id=int(i['value']))
+                try:
+                    _list = List.objects.get(_id=int(i['value']))
+                except:
+                    _list = None
                 setattr(task, i['attribute'], _list)
             elif i['attribute'] =='completed' :
                 setattr(task, i['attribute'], i['value'])
