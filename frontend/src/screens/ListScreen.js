@@ -100,7 +100,7 @@ function ListScreen({match}) {
         return {_id:element.dataset.id, attribute, value:status}
     });
     if(attribute==='completed'){
-      setValue(value==='2'?'1':'2')
+      setValue(value==='2'?'3':'2')
     }
     dispatch(updateTasks(tasksArray))
   }
@@ -160,7 +160,7 @@ function ListScreen({match}) {
   
   return (
     <Container fluid className='taskscreen d-flex flex-column'>
-      <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} />
+      <AddTaskForm taskShow={taskModal} setTaskShow={setTaskModal} listId={match.params.id} />
       {loading || loadingUpdate || loadingDelete ?<Loader /> : error || errorUpdate || errorDelete || errorListUpdate ? <Message  severity={'error'}>{error || errorUpdate || errorDelete || errorListUpdate}</Message>:''}
       <>
         <div className='menu-bar d-flex flex-row mt-2'>
@@ -225,11 +225,13 @@ function ListScreen({match}) {
             <TabPanel sx={{padding:'1rem 0'}} value="1">
               <div className="controls">
                 <FormCheck className='select-all' checked={selectAll} onChange={(e)=>handleSelectAll(e.target.checked)} label='Select All' />
+               
                 <div className="controls-edit-buttons">
                   <Button onClick={()=>setEditMode(!editMode)} size='small' color='inherit' variant="outlined" startIcon={<FaRegEdit />}>{editMode?'Disable':'Edit'}</Button>
                   
                 </div>
               </div>
+              {(list.tasks && list.tasks.length===0) && <div className='text-white'>No Saved tasks</div>}
               <ListGroup className='task-list'>
                 {list.tasks && list.tasks.filter(item=>item.important).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />

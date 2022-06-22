@@ -261,11 +261,11 @@ const classes = useStyles()
        
               <TabList onChange={handleChange} aria-label="lab API tabs example">
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-      width: 'auto'
-    }}} label="To do" value="1" />
+                    width: 'auto'
+                    }}} label="To do" value="1" />
                 <Tab onClick={()=>handleSelectAll(false)} sx={{width:'4rem', textTransform:'capitalize', ['@media (max-width:900px)']: { // eslint-disable-line no-useless-computed-key
-      width: 'auto'
-    }}} label="Completed" value="2" />
+                    width: 'auto'
+                    }}} label="Completed" value="2" />
                 
               </TabList>
             
@@ -277,6 +277,7 @@ const classes = useStyles()
                   
                 </div>
               </div>
+              {tasks.length===0 && <div className='text-white'>No Saved tasks</div>}
               <ListGroup className='task-list'>
                 {tasks.filter(item=>important?!item.completed && item.important:!item.completed).map(task=>(
                     <Task changedImportance={ ((changesArray.filter((v) => (v === task._id)).length)%2)===1} clickfunction={()=>markImportanceHandler(task._id)} updatingImportance={task._id===markingId} editMode={editMode} selectAll={selectAll} setSelectAll={setSelectAll} task={task} key={task._id} />

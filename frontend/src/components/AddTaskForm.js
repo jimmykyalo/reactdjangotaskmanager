@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom'
 import Loader from './Loader'
 import Message from './Message'
 
-function AddTaskForm({taskShow, setTaskShow}) {
+function AddTaskForm({taskShow, setTaskShow, listId}) {
     const history = useHistory()
     const taskCreate = useSelector(state=>state.taskCreate)
     const {error, loading, success} = taskCreate
@@ -19,7 +19,7 @@ function AddTaskForm({taskShow, setTaskShow}) {
     useEffect(() => {
       if(success){
         setTaskShow(false)
-        history.push('/')
+        
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [history, success])
@@ -27,7 +27,7 @@ function AddTaskForm({taskShow, setTaskShow}) {
     // form submit function
     const onSubmitHandler = (e)=>{
         e.preventDefault()
-        dispatch(createTask({name,description,completed,important,startTime,endTime, completedTime:completed?completedTime:''}))
+        dispatch(createTask({name,description,completed,important,startTime,endTime, completedTime:completed?completedTime:'', listId}))
     }
     // form input variables
     const [name, setName] = useState('')

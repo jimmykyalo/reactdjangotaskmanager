@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from .serializers import TaskSerializer, ListSerializer, UserSerializer, UserSerializerWithToken
 from .models import Task, List
@@ -16,32 +17,42 @@ from dateutil.parser._parser import ParserError
 # Create your views here.
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getAllTasks(request):
-    tasks = Task.objects.all()
+    user = request.user
+    tasks = Task.objects.filter(user=user)
     serializer = TaskSerializer(tasks, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getAllLists(request):
-    lists = List.objects.all()
+    lists = List.objects.filter(user=request.user)
     serializer = ListSerializer(lists, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getTaskById(request, id):
     task = Task.objects.get(_id=id)
     serializer = TaskSerializer(task, many=False)
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getListById(request, pk):
     list = List.objects.get(_id=pk)
-    serializer = ListSerializer(list, many=False)
-    return Response(serializer.data)
+    if list.user == request.user:
+        serializer = ListSerializer(list, many=False)
+        return Response(serializer.data)
+    else:
+        message = {'detail': 'You are not allowed to view this list'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def createList(request):
     data = request.data
     if request.user:
@@ -57,6 +68,7 @@ def createList(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def createTask(request):
     data = request.data
     
@@ -92,7 +104,8 @@ def createTask(request):
         completedTime=completionTime,
         important=data['important'],
         completed=data['completed'],
-        user=user
+        user=user,
+        list=list,
     )
     serializer = TaskSerializer(task, many=False)
     return Response(serializer.data)
@@ -106,11 +119,20 @@ def updateTasks(request):
         print(data)
         for i in data:
             task = Task.objects.get(_id=i['_id'])
+            if task.user != request.user:
+                message = {'detail': 'You are not allowed to edit this task'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
             if i['attribute'] =='startTime' or i['attribute'] =='endTime' or i['attribute'] =='completedTime':
                 setattr(task, i['attribute'], (timezone.make_aware(parse(i['value']), timezone.get_current_timezone())))
             elif i['attribute'] =='list':
                 _list = List.objects.get(_id=int(i['value']))
                 setattr(task, i['attribute'], _list)
+            elif i['attribute'] =='completed' :
+                setattr(task, i['attribute'], i['value'])
+                if i['value']==True:
+                    setattr(task, 'completedTime', timezone.make_aware(datetime.now(), timezone.get_current_timezone()))
+                else:
+                    setattr(task, 'completedTime', None)
             else :
                 setattr(task, i['attribute'], i['value'])
             task.save()
@@ -130,6 +152,9 @@ def deleteTasks(request):
     data = request.data
     for i in data:
         task = Task.objects.get(_id=i['_id'])
+        if task.user != request.user:
+            message = {'detail': 'You are not allowed to delete this task'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         task.delete()
     return Response('Tasks Deleted')
 
@@ -139,6 +164,9 @@ def markTask(request):
     data = request.data
     
     task = Task.objects.get(_id=data['taskId'])
+    if task.user != request.user:
+        message = {'detail': 'You are not allowed to edit this task'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
     taskValue = getattr(task, data['attribute'])
     setattr(task, data['attribute'], not taskValue)
     task.save()
@@ -201,6 +229,9 @@ def updateLists(request):
     print(data)
     for i in data:
         _list = List.objects.get(_id=i['_id'])
+        if _list.user != request.user:
+            message = {'detail': 'You are not allowed to edit this list'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         setattr(_list, i['attribute'], i['value'])
         _list.save()
         listList.append(_list)
@@ -215,6 +246,9 @@ def updateLists(request):
 def deleteLists(request):
     data = request.data
     for i in data:
-        list = List.objects.get(_id=i['_id'])
-        list.delete()
+        _list = List.objects.get(_id=i['_id'])
+        if _list.user != request.user:
+            message = {'detail': 'You are not allowed to delete this list'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        _list.delete()
     return Response('Lists Deleted')
